@@ -13,7 +13,7 @@ class OverView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 120,
-      width: 116,
+      width: double.maxFinite,
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),

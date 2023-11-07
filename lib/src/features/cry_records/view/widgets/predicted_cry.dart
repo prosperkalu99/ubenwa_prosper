@@ -70,6 +70,7 @@ class _PredictedCryState extends State<PredictedCry> {
       children: [
         Container(
           height: 194,
+          width: double.maxFinite,
           padding: const EdgeInsets.symmetric(horizontal: 14),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
@@ -84,7 +85,9 @@ class _PredictedCryState extends State<PredictedCry> {
                   ?.copyWith(fontSize: 11, color: Colors.white, fontWeight: FontWeight.w500),),
               gapH5,
               FittedBox(
-                child: Text("${widget.from.hour}:${widget.from.minute} - ${widget.to.hour}:${widget.to.minute}",
+                child: Text("${widget.from.hour < 10 ? "0" : ""}${widget.from.hour}:${widget.from.minute
+                    < 10 ? "0" : ""}${widget.from.minute} - ${widget.to.hour
+                    < 10 ? "0" : ""}${widget.to.hour}:${widget.to.minute < 10 ? "0" : ""}${widget.to.minute}",
                   style: context.theme.textTheme.bodyMedium
                     ?.copyWith(fontSize: 21, color: AppColor.accentColor, fontWeight: FontWeight.w600),),
               ),

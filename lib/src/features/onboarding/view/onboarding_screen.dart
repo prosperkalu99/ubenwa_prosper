@@ -18,7 +18,9 @@ class OnBoardingScreen extends StatefulWidget {
 
 class _OnBoardingScreenState extends State<OnBoardingScreen>  with TickerProviderStateMixin {
   late AnimationController rotationCtrl;
+  late AnimationController slideCtrl;
   late AnimationController fadeCtrl;
+  late Animation<double> slideAnimation;
 
   int pageIndex = 0;
   late double radius;
@@ -34,42 +36,29 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>  with TickerProvide
   void previous(){
     if (pageIndex > 0) {
       pageIndex--;
+      updateState();
 
-      var tempRad = radius;
-      radius = tempRad * 0.7;
+      slideCtrl.forward().whenComplete(() => slideCtrl.reset());
 
-      rotationCtrl.animateBack(pageIndex/4, duration: 1.seconds, curve: Curves.linearToEaseOut);
-
-      Future.delayed(0.55.seconds, (){
-        radius = tempRad;
-        updateState();
-      });
+      rotationCtrl.value = rotationCtrl.upperBound;
+      rotationCtrl.reverse();
 
       fadeCtrl.reset();
       fadeCtrl.forward();
-
-      updateState();
     }
   }
 
   void next(){
     if(pageIndex < 3) {
       pageIndex++;
+      updateState();
 
-      var tempRad = radius;
-      radius = tempRad * 0.7;
+      slideCtrl.forward().whenComplete(() => slideCtrl.reset());
 
-      rotationCtrl.animateTo(pageIndex/4, duration: 1.seconds, curve: Curves.linearToEaseOut);
-
-      Future.delayed(0.55.seconds, (){
-        radius = tempRad;
-        updateState();
-      });
+      rotationCtrl.forward().whenComplete(()=> rotationCtrl.reset());
 
       fadeCtrl.reset();
       fadeCtrl.forward();
-
-      updateState();
     }
   }
 
@@ -77,19 +66,23 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>  with TickerProvide
   void initState() {
     super.initState();
     rotationCtrl = AnimationController(duration: 1.seconds, vsync: this);
+    slideCtrl = AnimationController(duration: 1.seconds, vsync: this);
     fadeCtrl = AnimationController(duration: 1.seconds, vsync: this);
+    slideAnimation = CurvedAnimation(parent: slideCtrl, curve: Curves.linearToEaseOut);
+    slideCtrl.addListener(() => updateState());
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    radius = context.mediaQuery.size.height/6;
+    radius = context.mediaQuery.size.height/5.8;
   }
 
   @override
   void dispose() {
     rotationCtrl.dispose();
     fadeCtrl.dispose();
+    slideCtrl.dispose();
     super.dispose();
   }
 
@@ -118,15 +111,11 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>  with TickerProvide
               child: Center(
                 child: GestureDetector(
                   onHorizontalDragEnd: (details)=> _swipe(details: details),
-                  child: AnimatedContainer(
-                    duration: 0.3.seconds,
-                    curve: Curves.easeOutSine,
-                    child: OnboardingAnimatedImage(
-                      rotationCtrl: rotationCtrl,
-                      fadeCtrl: fadeCtrl,
-                      radius: radius,
-                      currentIndex: pageIndex,
-                    ),
+                  child: OnboardingAnimatedImage(
+                    rotationCtrl: rotationCtrl,
+                    fadeCtrl: fadeCtrl,
+                    radius: slideAnimation.value < 0.4? radius :  slideAnimation.value * radius,
+                    currentIndex: pageIndex,
                   ),
                 ),
               ),

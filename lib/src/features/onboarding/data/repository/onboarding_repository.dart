@@ -30,21 +30,29 @@ class OnboardingRepository {
   ];
 
   static var babyImages = [
-    BabyImageData(
-      image: AssetConstants.obBabyTwo,
-      color: AppColor.primaryColor.withOpacity(0.15),
-    ),
-    BabyImageData(
-      image: AssetConstants.obBabyThree,
-      color: AppColor.accentColor,
-    ),
-    BabyImageData(
-      image: AssetConstants.obBabyFour,
-      color: AppColor.primaryColor.withOpacity(0.15),
-    ),
-    BabyImageData(
-      image: AssetConstants.obBabyOne,
-      color: AppColor.accentColor.withOpacity(0.15),
-    ),
+    [
+      AssetConstants.baby11,
+      AssetConstants.baby12,
+      AssetConstants.baby13,
+      AssetConstants.baby14,
+    ],
+    [
+      AssetConstants.baby21,
+      AssetConstants.baby22,
+      AssetConstants.baby23,
+      AssetConstants.baby24,
+    ],
+    [
+      AssetConstants.baby31,
+      AssetConstants.baby32,
+      AssetConstants.baby33,
+      AssetConstants.baby34,
+    ],
+    [
+      AssetConstants.baby41,
+      AssetConstants.baby42,
+      AssetConstants.baby43,
+      AssetConstants.baby44,
+    ]
   ];
 }
