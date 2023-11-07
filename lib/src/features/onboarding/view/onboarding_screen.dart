@@ -111,6 +111,15 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>  with TickerProvide
               child: Center(
                 child: GestureDetector(
                   onHorizontalDragEnd: (details)=> _swipe(details: details),
+                  onHorizontalDragUpdate: (details) {
+                    // Note: Sensitivity is integer used when you don't want to mess up vertical drag
+                    int sensitivity = 8;
+                    if (details.delta.dx > sensitivity) {
+                      // Right Swipe
+                    } else if(details.delta.dx < -sensitivity){
+                      //Left Swipe
+                    }
+                  },
                   child: OnboardingAnimatedImage(
                     rotationCtrl: rotationCtrl,
                     fadeCtrl: fadeCtrl,
@@ -131,7 +140,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>  with TickerProvide
                     duration: 0.5.seconds,
                     height: 6,
                     width: isCurrent? 15 : 6,
-                    margin: const EdgeInsets.symmetric(horizontal: 5),
+                    margin: const EdgeInsets.symmetric(horizontal: 1.5),
                     decoration: BoxDecoration(
                       color: isCurrent && isAccent? AppColor.accentColor : isCurrent && !isAccent
                           ? AppColor.primaryColor : AppColor.primaryColor.withOpacity(0.3),

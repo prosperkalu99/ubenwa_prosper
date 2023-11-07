@@ -118,8 +118,8 @@ class _PredictedCryState extends State<PredictedCry> {
           alignment: Alignment.topRight,
           child: Padding(
             padding: const EdgeInsets.only(right: 8, top: 8),
-            child: Icon(
-              Icons.alarm, size: 18, color: AppColor.accentColor,
+            child: const Icon(
+              Icons.alarm, size: 18, color: Colors.white,
             ).animate(
               onComplete: (ctrl)=> ctrl.repeat(),
             ).fadeIn(

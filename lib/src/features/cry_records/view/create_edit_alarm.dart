@@ -119,6 +119,7 @@ class _CreateEditAlarmState extends State<CreateEditAlarm> {
               ),
               gapW12,
               FUTextButton(
+                useCupertino: true,
                 isLoading: savingAlarm,
                 style: TextButton.styleFrom(
                   foregroundColor: AppColor.accentColor,
@@ -181,6 +182,7 @@ class _CreateEditAlarmState extends State<CreateEditAlarm> {
                   ),
                   gapH32,
                   if(widget.settings != null)FUButton(
+                    useCupertino: true,
                     isLoading: deletingAlarm,
                     style: ElevatedButton.styleFrom(
                         foregroundColor: AppColor.errorColor,
