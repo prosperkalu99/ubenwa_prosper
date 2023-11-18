@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:udenwa_prosper/src/components/fu_button.dart';
+import 'package:udenwa_prosper/src/components/fu_text_button.dart';
 import 'package:udenwa_prosper/src/constants/app_sizes.dart';
 import 'package:udenwa_prosper/src/features/data_gathering/view/data_gathering_screen.dart';
 import 'package:udenwa_prosper/src/features/onboarding/data/repository/onboarding_repository.dart';
@@ -20,12 +21,29 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>  with TickerProvide
   late AnimationController rotationCtrl;
   late AnimationController slideCtrl;
   late AnimationController fadeCtrl;
-  late Animation<double> slideAnimation;
+  late Animation slideAnimation;
 
   int pageIndex = 0;
-  late double radius;
 
   double posX = 0.0;
+
+
+  @override
+  void initState() {
+    super.initState();
+    rotationCtrl = AnimationController(duration: 0.5.seconds, vsync: this);
+    fadeCtrl = AnimationController(duration: 1.seconds, vsync: this);
+    slideCtrl = AnimationController(duration: 0.2.seconds, upperBound: 0.45, lowerBound: 0.3, vsync: this);
+    slideAnimation = CurvedAnimation(parent: slideCtrl, curve: Curves.linear, reverseCurve: Curves.linear);
+  }
+
+  @override
+  void dispose() {
+    rotationCtrl.dispose();
+    fadeCtrl.dispose();
+    slideCtrl.dispose();
+    super.dispose();
+  }
 
   void updateState(){
     if (mounted) {
@@ -38,7 +56,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>  with TickerProvide
       pageIndex--;
       updateState();
 
-      slideCtrl.forward().whenComplete(() => slideCtrl.reset());
+      performSlideAnimation();
 
       rotationCtrl.value = rotationCtrl.upperBound;
       rotationCtrl.reverse();
@@ -53,7 +71,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>  with TickerProvide
       pageIndex++;
       updateState();
 
-      slideCtrl.forward().whenComplete(() => slideCtrl.reset());
+      performSlideAnimation();
 
       rotationCtrl.forward().whenComplete(()=> rotationCtrl.reset());
 
@@ -62,28 +80,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>  with TickerProvide
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    rotationCtrl = AnimationController(duration: 1.seconds, vsync: this);
-    slideCtrl = AnimationController(duration: 1.seconds, vsync: this);
-    fadeCtrl = AnimationController(duration: 1.seconds, vsync: this);
-    slideAnimation = CurvedAnimation(parent: slideCtrl, curve: Curves.linearToEaseOut);
-    slideCtrl.addListener(() => updateState());
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    radius = context.mediaQuery.size.height/5.8;
-  }
-
-  @override
-  void dispose() {
-    rotationCtrl.dispose();
-    fadeCtrl.dispose();
-    slideCtrl.dispose();
-    super.dispose();
+  void performSlideAnimation(){
+    slideCtrl.forward().whenComplete(()=> slideCtrl.reverse());
   }
 
   void _swipe({required DragEndDetails details}){
@@ -114,7 +112,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>  with TickerProvide
                   child: OnboardingAnimatedImage(
                     rotationCtrl: rotationCtrl,
                     fadeCtrl: fadeCtrl,
-                    radius: slideAnimation.value < 0.4? radius :  slideAnimation.value * radius,
+                    slideAnim: slideAnimation,
+                    radius: context.mediaQuery.size.height/5.8,
                     currentIndex: pageIndex,
                   ),
                 ),
@@ -185,31 +184,29 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>  with TickerProvide
                 Visibility(
                   visible: pageIndex>0,
                   child: Flexible(
-                    child: InkWell(
-                      onTap: ()=> previous(),
-                      child: Text("Previous", textAlign: TextAlign.start,  style: context.theme.textTheme.bodyMedium
-                          ?.copyWith(fontSize: 16, fontWeight: FontWeight.w600),
-                      ).animate(
-                        controller: fadeCtrl,
-                      ).fadeIn(
-                        begin: 0.05, duration: 1.2.seconds,
+                    child: FUTextButton(
+                      style: TextButton.styleFrom(
+                        minimumSize: const Size(50, 20),
+                        foregroundColor: AppColor.textColor,
                       ),
+                      text: "Previous",
+                      onPressed: ()=> previous(),
+                    ).animate().fadeIn(
+                      begin: 0.05, duration: 1.2.seconds,
                     ),
                   ),
                 ),
                 Visibility(
                   visible: pageIndex<3,
                   child: Flexible(
-                    child: InkWell(
-                      onTap: ()=> next(),
-                      child: Text(pageIndex == 0? "Show Me How" : "Next", textAlign: TextAlign.end,
-                        style: context.theme.textTheme.bodyMedium
-                            ?.copyWith(fontSize: 16, fontWeight: FontWeight.w600, color: AppColor.primaryColor),
-                      ).animate(
-                        controller: fadeCtrl,
-                      ).fadeIn(
-                        begin: 0.05, duration: 1.2.seconds,
+                    child: FUTextButton(
+                      style: TextButton.styleFrom(
+                        minimumSize: const Size(50, 20),
                       ),
+                      text: pageIndex == 0? "Show Me How" : "Next",
+                      onPressed: ()=> next(),
+                    ).animate().fadeIn(
+                      begin: 0.05, duration: 1.2.seconds,
                     ),
                   ),
                 ),

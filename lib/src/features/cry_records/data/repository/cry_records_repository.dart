@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:udenwa_prosper/src/constants/assets_constants.dart';
-import 'package:udenwa_prosper/src/features/cry_records/data/models/overviewData.dart';
+import 'package:udenwa_prosper/src/features/cry_records/data/data_source/local_data_source.dart';
+import 'package:udenwa_prosper/src/features/cry_records/data/models/breakdown_data.dart';
+import 'package:udenwa_prosper/src/features/cry_records/data/models/overview_data.dart';
 import 'package:udenwa_prosper/src/res/hex_color.dart';
 
 class CryRecordsRepository{
@@ -30,4 +34,10 @@ class CryRecordsRepository{
       bottomTextColor: HexColor("#14833D"),
     ),
   ];
+
+  static List<BreakdownData> getBreakDownData(){
+    return List<BreakdownData>.from(json.decode(breakdownDataJson()).map((x) => BreakdownData.fromJson(x)));
+  }
+
+
 }

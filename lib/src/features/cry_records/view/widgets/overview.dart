@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:udenwa_prosper/src/components/fu_image.dart';
 import 'package:udenwa_prosper/src/constants/app_sizes.dart';
-import 'package:udenwa_prosper/src/features/cry_records/data/models/overviewData.dart';
+import 'package:udenwa_prosper/src/features/cry_records/data/models/overview_data.dart';
 import 'package:udenwa_prosper/src/res/hex_color.dart';
 import 'package:udenwa_prosper/src/utils/extensions/build_context_extensions.dart';
 

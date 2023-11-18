@@ -10,11 +10,12 @@ import 'package:collection/collection.dart';
 
 class OnboardingAnimatedImage extends StatelessWidget {
   final AnimationController rotationCtrl;
+  final Animation slideAnim;
   final AnimationController fadeCtrl;
   final double radius;
   final int currentIndex;
   const OnboardingAnimatedImage({super.key, required this.rotationCtrl,
-    required this.fadeCtrl, required this.radius, required this.currentIndex});
+    required this.fadeCtrl, required this.radius, required this.currentIndex, required this.slideAnim});
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +23,15 @@ class OnboardingAnimatedImage extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: [
+        SizedBox(
+          height: size,
+          width: size,
+          child: FUImage.image(assetStringOrUrl: OnboardingRepository
+              .onboardingItems[currentIndex].image, fit: BoxFit.cover).animate(
+            controller: fadeCtrl,
+            onComplete: (ctrl)=> ctrl.stop(canceled: false),
+          ).fadeIn(begin: 0.05, duration: 1.2.seconds),
+        ),
         Stack(
           alignment: Alignment.center,
           children: [
@@ -30,7 +40,7 @@ class OnboardingAnimatedImage extends StatelessWidget {
                 angle: index == 0? 0 : (index/4 )*360,
                 radius: radius,
                 image: e,
-                animCtrl: fadeCtrl,
+                ctrl: slideAnim,
               );
             })
           ],
@@ -40,15 +50,7 @@ class OnboardingAnimatedImage extends StatelessWidget {
         ).rotate(
           begin: 0,
           end: 0.25,
-        ),
-        SizedBox(
-          height: size,
-          width: size,
-          child: FUImage.image(assetStringOrUrl: OnboardingRepository
-              .onboardingItems[currentIndex].image, fit: BoxFit.cover).animate(
-            controller: fadeCtrl,
-            onComplete: (ctrl)=> ctrl.stop(canceled: false),
-          ).fadeIn(begin: 0.05, duration: 1.2.seconds),
+          duration: 0.2.seconds,
         ),
       ],
     );
@@ -59,22 +61,25 @@ class CircularImages extends StatelessWidget {
   final double angle;
   final double radius;
   final String image;
-  final AnimationController animCtrl;
+  final Animation ctrl;
   const CircularImages({super.key, required this.angle,
-    required this.radius, required this.image, required this.animCtrl});
+    required this.radius, required this.image, required this.ctrl});
 
   @override
   Widget build(BuildContext context) {
     final double rad = radians(angle);
-    return Transform(
-      transform: Matrix4.identity()..translate((radius) * cos(rad), (radius) * sin(rad)),
+    final double x = radius * cos(rad);
+    final double y = radius * sin(rad);
+    return AnimatedBuilder(
+      animation: ctrl,
+      builder: (context, child) {
+        return Transform.translate(
+          offset: Offset(x * 0.3/ctrl.value, y * 0.3/ctrl.value),
+          child: child,
+        );
+      },
       child: FUImage.image(
         assetStringOrUrl: image,
-      ).animate(
-        controller: animCtrl,
-        onComplete: (ctrl)=> ctrl.stop(),
-      ).fadeIn(
-        begin: 0.01, duration: 1.2.seconds,
       ),
     );
   }
