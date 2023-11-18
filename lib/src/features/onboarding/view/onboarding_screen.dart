@@ -61,8 +61,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>  with TickerProvide
       rotationCtrl.value = rotationCtrl.upperBound;
       rotationCtrl.reverse();
 
-      fadeCtrl.reset();
-      fadeCtrl.forward();
+      performFadeAnimation();
     }
   }
 
@@ -75,13 +74,17 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>  with TickerProvide
 
       rotationCtrl.forward().whenComplete(()=> rotationCtrl.reset());
 
-      fadeCtrl.reset();
-      fadeCtrl.forward();
+      performFadeAnimation();
     }
   }
 
   void performSlideAnimation(){
     slideCtrl.forward().whenComplete(()=> slideCtrl.reverse());
+  }
+
+  void performFadeAnimation(){
+    fadeCtrl.reset();
+    fadeCtrl.forward();
   }
 
   void _swipe({required DragEndDetails details}){
